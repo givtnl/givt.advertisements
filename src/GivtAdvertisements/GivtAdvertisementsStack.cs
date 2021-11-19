@@ -13,7 +13,7 @@ namespace GivtAdvertisements
     {
         internal GivtAdvertisementsStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
-            var dockerRepository = new Repository(this, "Repository", new RepositoryProps
+            var dockerRepository = new Repository(this, "advertisement-repository", new RepositoryProps
             {
                 RemovalPolicy = RemovalPolicy.DESTROY,
                 LifecycleRules = new ILifecycleRule[]
@@ -44,12 +44,11 @@ namespace GivtAdvertisements
             });
             
             table.GrantFullAccess(lambdaFunction);
-            
-            var apiGateWay = new LambdaRestApi(this, "api", new LambdaRestApiProps
+
+            var apiGateWay = new LambdaRestApi(this, "advertisement-lambda-api", new LambdaRestApiProps
             {
-                EndpointTypes = new EndpointType[] { EndpointType.REGIONAL },
+                EndpointTypes = new EndpointType[] {EndpointType.REGIONAL},
                 Handler = lambdaFunction,
-                
             });
         }
     }
