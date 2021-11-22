@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using GivtAdvertisements.Business.Advertisements;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +33,8 @@ namespace Advertisements.API
             services.AddControllers();
             services.AddMediatR(typeof(GetAdvertisementsQuery));
             services.AddAWSService<IAmazonDynamoDB>(Configuration.GetAWSOptions("DynamoDb"));
+            services.AddTransient<IDynamoDBContext, DynamoDBContext>();
+            services.AddCors(x => x.AddDefaultPolicy(p => p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Advertisements.API", Version = "v1"});
@@ -51,6 +54,7 @@ namespace Advertisements.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthorization();
 
