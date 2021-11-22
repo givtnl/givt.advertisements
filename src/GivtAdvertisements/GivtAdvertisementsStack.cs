@@ -31,6 +31,8 @@ namespace GivtAdvertisements
                 PartitionKey = new Attribute { Name = "id", Type = AttributeType.STRING },
                 Stream = StreamViewType.NEW_AND_OLD_IMAGES,
                 Encryption = TableEncryption.AWS_MANAGED,
+                TableName = "Advertisements",
+                RemovalPolicy = RemovalPolicy.DESTROY,
             });
 
             var lambdaFunction = new Function(this, "advertisement-lambda", new FunctionProps
@@ -45,7 +47,7 @@ namespace GivtAdvertisements
             });
             
             table.GrantFullAccess(lambdaFunction);
-
+            
             var apiGateWay = new LambdaRestApi(this, "advertisement-lambda-api", new LambdaRestApiProps
             {
                 EndpointTypes = new EndpointType[] {EndpointType.REGIONAL},

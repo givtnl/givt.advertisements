@@ -1,11 +1,13 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
+using GivtAdvertisements.Business.Advertisements.Models;
 using MediatR;
 
 namespace GivtAdvertisements.Business.Advertisements
 {
-    public class GetAdvertisementsQueryHandler: IRequestHandler<GetAdvertisementsQuery, Unit>
+    public class GetAdvertisementsQueryHandler: IRequestHandler<GetAdvertisementsQuery, List<AdvertisementListModel>>
     {
         private readonly IDynamoDBContext _dynamoDb;
 
@@ -14,7 +16,7 @@ namespace GivtAdvertisements.Business.Advertisements
             _dynamoDb = dynamoDb;
         }
         
-        public Task<Unit> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
+        public Task<List<AdvertisementListModel>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }
