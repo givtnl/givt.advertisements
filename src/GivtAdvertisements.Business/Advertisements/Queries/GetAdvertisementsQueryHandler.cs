@@ -7,7 +7,7 @@ using MediatR;
 
 namespace GivtAdvertisements.Business.Advertisements
 {
-    public class GetAdvertisementsQueryHandler: IRequestHandler<GetAdvertisementsQuery, List<AdvertisementListModel>>
+    public class GetAdvertisementsQueryHandler: IRequestHandler<GetAdvertisementsQuery, List<Advertisement>>
     {
         private readonly IDynamoDBContext _dynamoDb;
 
@@ -16,7 +16,7 @@ namespace GivtAdvertisements.Business.Advertisements
             _dynamoDb = dynamoDb;
         }
         
-        public Task<List<AdvertisementListModel>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
+        public Task<List<Advertisement>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }

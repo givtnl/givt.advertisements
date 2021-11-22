@@ -4,7 +4,7 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace GivtAdvertisements.Business.Advertisements.Models
 {
-    public class AdvertisementListModel
+    public class Advertisement
     {
         [DynamoDBHashKey("PK")]
         public string PrimaryKey { get; set; }
