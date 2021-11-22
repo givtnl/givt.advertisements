@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivtAdvertisements", "GivtA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Advertisements.API", "Advertisements.API\Advertisements.API.csproj", "{F9F8143C-5CDB-4218-9470-62D58EBD0C84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivtAdvertisements.Business", "GivtAdvertisements.Business\GivtAdvertisements.Business.csproj", "{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{F9F8143C-5CDB-4218-9470-62D58EBD0C84}.Release|x64.Build.0 = Release|Any CPU
 		{F9F8143C-5CDB-4218-9470-62D58EBD0C84}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9F8143C-5CDB-4218-9470-62D58EBD0C84}.Release|x86.Build.0 = Release|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Debug|x64.Build.0 = Debug|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Debug|x86.Build.0 = Debug|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Release|x64.ActiveCfg = Release|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Release|x64.Build.0 = Release|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Release|x86.ActiveCfg = Release|Any CPU
+		{3F1E6ACB-5832-463D-9AF5-10F0A1BEB63A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

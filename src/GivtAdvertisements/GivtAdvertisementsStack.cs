@@ -2,7 +2,6 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.APIGateway;
 using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.ECR;
-using Amazon.CDK.AWS.Events.Targets;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Constructs;
@@ -30,6 +29,8 @@ namespace GivtAdvertisements
             {
                 BillingMode = BillingMode.PAY_PER_REQUEST,
                 PartitionKey = new Attribute { Name = "id", Type = AttributeType.STRING },
+                Stream = StreamViewType.NEW_AND_OLD_IMAGES,
+                Encryption = TableEncryption.AWS_MANAGED,
             });
 
             var lambdaFunction = new Function(this, "advertisement-lambda", new FunctionProps
