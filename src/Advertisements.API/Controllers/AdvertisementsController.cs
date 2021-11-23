@@ -36,7 +36,8 @@ namespace Advertisements.API.Controllers
         public async Task<IActionResult> GetLastUpdated(CancellationToken cancellationToken)
         {
             var lastUpdated = await _mediator.Send(new GetLastUpdatedQuery(), cancellationToken);
-            Response.Headers.Add("Last-Modified", lastUpdated.ToString("o"));
+            if (lastUpdated != null)
+                Response.Headers.Add("Last-Modified", lastUpdated.Value.ToString("o"));
             return Ok();
         }
     }

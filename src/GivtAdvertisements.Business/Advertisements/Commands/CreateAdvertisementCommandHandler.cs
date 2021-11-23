@@ -19,7 +19,7 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
         
         public async Task<Advertisement> Handle(CreateAdvertisementCommand request, CancellationToken cancellationToken)
         {
-            var writeRequest = _dynamoDb.CreateBatchWrite<Advertisement>(new DynamoDBOperationConfig
+            var writeAdvertisementRequest = _dynamoDb.CreateBatchWrite<Advertisement>(new DynamoDBOperationConfig
             {
                 OverrideTableName = "Advertisements"
             });
@@ -40,13 +40,24 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
             metaInfo.ChangedDate = currentTime;
             metaInfo.CreationDate = currentTime;
 
-            advertisement.SortKey = $"UPDATED#{metaInfo.ChangedDate:yyyy-MM-ddTHH:mm:ss}#ID#{Guid.NewGuid().ToString()}";
+            advertisement.SortKey = $"#ID#{Guid.NewGuid().ToString()}";
 
             advertisement.MetaInfo = metaInfo;
 
-            writeRequest.AddPutItem(advertisement);
+            writeAdvertisementRequest.AddPutItem(advertisement);
+            
+            var writeLastUpdatedRequest = _dynamoDb.CreateBatchWrite<LastUpdatedAdvertisement>(new DynamoDBOperationConfig
+            {
+                OverrideTableName = "Advertisements"
+            });
+            writeLastUpdatedRequest.AddPutItem(new LastUpdatedAdvertisement
+            {
+                LastUpdated = currentTime,
+                PrimaryKey = "#LASTUPDATED",
+                SortKey = $"#UPDATED"
+            });
 
-            await writeRequest.ExecuteAsync(cancellationToken);
+            await writeAdvertisementRequest.Combine(writeLastUpdatedRequest).ExecuteAsync(cancellationToken);
             
             return advertisement;
         }

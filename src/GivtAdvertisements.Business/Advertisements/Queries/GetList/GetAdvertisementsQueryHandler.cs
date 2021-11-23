@@ -18,8 +18,9 @@ namespace GivtAdvertisements.Business.Advertisements
         
         public async Task<List<Advertisement>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
         {
-            var conditions = new List<ScanCondition>();
-            return  await _dynamoDb.ScanAsync<Advertisement>(conditions, new DynamoDBOperationConfig { OverrideTableName = "Advertisements"}).GetRemainingAsync(cancellationToken);
+            var query = _dynamoDb.QueryAsync<Advertisement>("#ADVERTISEMENT", new DynamoDBOperationConfig {OverrideTableName = "Advertisements"});
+            var itemList = await query.GetRemainingAsync(cancellationToken);
+            return itemList;
         }
     }
 }
