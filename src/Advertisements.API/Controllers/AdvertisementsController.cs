@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using GivtAdvertisements.Business.Advertisements;
 using GivtAdvertisements.Business.Advertisements.Commands;
@@ -29,6 +30,13 @@ namespace Advertisements.API.Controllers
         {
             var created = await _mediator.Send(command, cancellationToken);
             return Created($"advertisement/{created.PrimaryKey}", created);
+        }
+
+        [HttpHead]
+        public async Task<IActionResult> GetLastUpdated(CancellationToken cancellationToken)
+        {
+            Response.Headers.Add("Last-Modified", DateTime.UtcNow.ToString("o"));
+            return Ok();
         }
     }
 }
