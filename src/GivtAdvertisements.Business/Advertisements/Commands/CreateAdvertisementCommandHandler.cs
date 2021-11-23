@@ -24,8 +24,10 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
                 OverrideTableName = "Advertisements"
             });
 
+            var currentTime = DateTime.UtcNow;
+            
             var advertisement = new Advertisement();
-            advertisement.PrimaryKey = Guid.NewGuid().ToString();
+            advertisement.PrimaryKey = $"#ADVERTISEMENT";
             advertisement.Text = new Dictionary<string, string>();
             advertisement.Text["nl"] = request.Text;
             advertisement.Title = new Dictionary<string, string>();
@@ -35,10 +37,10 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
             metaInfo.Country = "";
             metaInfo.Featured = false;
             metaInfo.AvailableLanguages = "nl";
-            metaInfo.ChangedDate = DateTime.Now;
-            metaInfo.CreationDate = DateTime.Now;
+            metaInfo.ChangedDate = currentTime;
+            metaInfo.CreationDate = currentTime;
 
-            advertisement.SortKey = $"#UPDATED#{metaInfo.ChangedDate:yyyy-MM-ddTHH:mm:ss}";
+            advertisement.SortKey = $"UPDATED#{metaInfo.ChangedDate:yyyy-MM-ddTHH:mm:ss}#ID#{Guid.NewGuid().ToString()}";
 
             advertisement.MetaInfo = metaInfo;
 

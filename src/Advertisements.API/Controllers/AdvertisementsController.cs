@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GivtAdvertisements.Business.Advertisements;
 using GivtAdvertisements.Business.Advertisements.Commands;
+using GivtAdvertisements.Business.Advertisements.Queries.GetLastUpdated;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +35,8 @@ namespace Advertisements.API.Controllers
         [HttpHead]
         public async Task<IActionResult> GetLastUpdated(CancellationToken cancellationToken)
         {
-            Response.Headers.Add("Last-Modified", DateTime.UtcNow.ToString("o"));
+            var lastUpdated = await _mediator.Send(new GetLastUpdatedQuery(), cancellationToken);
+            Response.Headers.Add("Last-Modified", lastUpdated.ToString("o"));
             return Ok();
         }
     }
