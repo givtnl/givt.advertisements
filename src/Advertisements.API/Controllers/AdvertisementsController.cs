@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using GivtAdvertisements.Business.Advertisements;
 using GivtAdvertisements.Business.Advertisements.Commands;
-using GivtAdvertisements.Business.Advertisements.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
