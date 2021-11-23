@@ -34,6 +34,6 @@ jobs:
           ECR_REPOSITORY:  ${{ secrets.AWS_ECR_REPOSITORY_QA }}
           IMAGE_TAG: latest
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./src/Advertisements.API
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --image-uri $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
