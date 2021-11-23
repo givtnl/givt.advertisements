@@ -35,7 +35,7 @@ namespace GivtAdvertisements
                 TableName = "Advertisements",
                 RemovalPolicy = RemovalPolicy.DESTROY,
             });
-
+            
             var lambdaFunction = new Function(this, "advertisement-lambda", new FunctionProps
             {
                 Handler = Handler.FROM_IMAGE,
@@ -52,6 +52,7 @@ namespace GivtAdvertisements
             var apiGateWay = new LambdaRestApi(this, "advertisement-lambda-api", new LambdaRestApiProps
             {
                 EndpointTypes = new EndpointType[] {EndpointType.REGIONAL},
+                Proxy = true,
                 Handler = lambdaFunction,
             });
         }
