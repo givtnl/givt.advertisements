@@ -27,8 +27,8 @@ namespace Advertisements.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostNewAdvertisement([FromBody] CreateAdvertisementCommand command, CancellationToken cancellationToken)
         {
-            await _mediator.Send(command, cancellationToken);
-            return Ok();
+            var created = await _mediator.Send(command, cancellationToken);
+            return Created($"advertisement/{created.PrimaryKey}", created);
         }
     }
 }
