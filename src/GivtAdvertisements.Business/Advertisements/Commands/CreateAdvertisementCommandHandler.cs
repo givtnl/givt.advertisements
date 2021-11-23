@@ -26,23 +26,24 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
 
             var currentTime = DateTime.UtcNow;
             
-            var advertisement = new Advertisement();
-            advertisement.PrimaryKey = $"#ADVERTISEMENT";
-            advertisement.Text = new Dictionary<string, string>();
-            advertisement.Text["nl"] = request.Text;
-            advertisement.Title = new Dictionary<string, string>();
-            advertisement.Title["nl"] = request.Title;
+            var metaInfo = new AdvertisementMetaInfo
+            {
+                Country = request.Country,
+                Featured = request.Featured,
+                AvailableLanguages = request.AvailableLanguages,
+                ChangedDate = currentTime,
+                CreationDate = currentTime
+            };
 
-            var metaInfo = new AdvertisementMetaInfo();
-            metaInfo.Country = "";
-            metaInfo.Featured = false;
-            metaInfo.AvailableLanguages = "nl";
-            metaInfo.ChangedDate = currentTime;
-            metaInfo.CreationDate = currentTime;
-
-            advertisement.SortKey = $"#ID#{Guid.NewGuid().ToString()}";
-
-            advertisement.MetaInfo = metaInfo;
+            var advertisement = new Advertisement
+            {
+                PrimaryKey = $"#ADVERTISEMENT",
+                Text = request.Text,
+                Title = request.Title,
+                SortKey = $"#ID#{Guid.NewGuid().ToString()}",
+                MetaInfo = metaInfo,
+                ImageUrl = request.ImageUrl
+            };
 
             writeAdvertisementRequest.AddPutItem(advertisement);
             

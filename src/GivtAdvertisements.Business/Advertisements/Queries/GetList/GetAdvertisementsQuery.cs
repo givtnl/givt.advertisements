@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GivtAdvertisements.Business.Advertisements
 {
-    public class GetAdvertisementsQuery: IRequest<List<Advertisement>>
+    public class GetAdvertisementsQuery: IRequest<List<AdvertisementListItem>>
     {
         
     }
