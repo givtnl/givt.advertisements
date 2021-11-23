@@ -1,10 +1,17 @@
 using Amazon.CDK;
 using Amazon.CDK.AWS.APIGateway;
+using Amazon.CDK.AWS.CloudFront;
 using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.ECR;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
+using Amazon.CDK.AWS.S3;
+using Amazon.CDK.AWS.S3.Deployment;
 using Constructs;
+using Function = Amazon.CDK.AWS.Lambda.Function;
+using FunctionProps = Amazon.CDK.AWS.Lambda.FunctionProps;
+using ILifecycleRule = Amazon.CDK.AWS.ECR.ILifecycleRule;
+using LifecycleRule = Amazon.CDK.AWS.ECR.LifecycleRule;
 
 namespace GivtAdvertisements
 {
@@ -55,6 +62,19 @@ namespace GivtAdvertisements
                 Proxy = true,
                 Handler = lambdaFunction,
             });
+            
+            var bucket = new Bucket(this, "advertisement-bucket", new BucketProps {
+                AccessControl =  BucketAccessControl.PUBLIC_READ,
+                Encryption = BucketEncryption.S3_MANAGED,
+                EnforceSSL = true,
+                PublicReadAccess = true,
+                AutoDeleteObjects = true,
+                RemovalPolicy = RemovalPolicy.DESTROY,
+            });
+
+            var originAccessForBucket = new OriginAccessIdentity(this, "advertisement-bucket-access");
+
+            bucket.GrantRead(originAccessForBucket); 
         }
     }
 }
