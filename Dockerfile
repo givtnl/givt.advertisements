@@ -8,4 +8,4 @@ ENV ASPNETCORE_URLS http://*:80
 
 EXPOSE 80
 
-CMD [ "Advertisements.Api::Advertisements.Api.LambdaFunctionHandler::FunctionHandlerAsync" ]
+CMD [ "Advertisements.Api::Advertisements.API.LambdaFunctionHandler::FunctionHandlerAsync" ]
