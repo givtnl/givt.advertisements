@@ -20,8 +20,8 @@ namespace Advertisements.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            await _mediator.Send(new GetAdvertisementsQuery(),cancellationToken);
-            return Ok(new {prop = "ah yeet"});
+            var advertisements = await _mediator.Send(new GetAdvertisementsQuery(),cancellationToken);
+            return Ok(advertisements);
         }
 
         [HttpPost]

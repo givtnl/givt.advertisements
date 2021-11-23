@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using GivtAdvertisements.Business.Advertisements.Models;
 using MediatR;
 
@@ -16,9 +18,10 @@ namespace GivtAdvertisements.Business.Advertisements
             _dynamoDb = dynamoDb;
         }
         
-        public Task<List<Advertisement>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
+        public async Task<List<Advertisement>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var conditions = new List<ScanCondition>();
+            return  await _dynamoDb.ScanAsync<Advertisement>(conditions, new DynamoDBOperationConfig { OverrideTableName = "Advertisements"}).GetRemainingAsync(cancellationToken);
         }
     }
 }
