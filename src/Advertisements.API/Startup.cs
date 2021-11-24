@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Advertisements.API.Infrastructure;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using GivtAdvertisements.Business.Advertisements;
@@ -30,7 +31,8 @@ namespace Advertisements.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()));
             services.AddMediatR(typeof(GetAdvertisementsQuery));
             services.AddAWSService<IAmazonDynamoDB>(Configuration.GetAWSOptions("DynamoDb"));
             services.AddTransient<IDynamoDBContext, DynamoDBContext>();
