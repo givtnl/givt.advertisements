@@ -35,12 +35,15 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
                 CreationDate = currentTime
             };
 
+            var id = Guid.NewGuid();
+
             var advertisement = new Advertisement
             {
+                AdvertisementId = id,
                 PrimaryKey = $"#ADVERTISEMENT",
                 Text = request.Text,
                 Title = request.Title,
-                SortKey = $"#ID#{Guid.NewGuid().ToString()}",
+                SortKey = $"#ID#{id.ToString()}",
                 MetaInfo = metaInfo,
                 ImageUrl = request.ImageUrl
             };
