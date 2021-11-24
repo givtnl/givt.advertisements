@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GivtAdvertisements.Business.Advertisements;
@@ -35,9 +36,17 @@ namespace Advertisements.API.Controllers
         [HttpHead]
         public async Task<IActionResult> GetLastUpdated(CancellationToken cancellationToken)
         {
+            Request.Headers.TryGetValue("If-Modified-Since", out var clientLastModified);
             var lastUpdated = await _mediator.Send(new GetLastUpdatedQuery(), cancellationToken);
-            if (lastUpdated != null)
-                Response.Headers.Add("Last-Modified", lastUpdated.Value.ToString("o"));
+            
+            if (lastUpdated == null) return NoContent();
+            
+            Response.Headers.Add("Last-Modified", lastUpdated.Value.ToString("o"));
+            
+            if (clientLastModified.Any())
+            {
+                return DateTime.Parse(clientLastModified[0]) < lastUpdated ? Ok() : StatusCode(304);
+            }
             return Ok();
         }
     }
