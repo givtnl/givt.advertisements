@@ -34,7 +34,6 @@ namespace GivtAdvertisements
                 }
             });
 
-            
             var table = new Table(this, $"{id}-table", new TableProps
             {
                 BillingMode = BillingMode.PAY_PER_REQUEST,
@@ -42,7 +41,7 @@ namespace GivtAdvertisements
                 SortKey = new Attribute {Name = "SK", Type = AttributeType.STRING},
                 Stream = StreamViewType.NEW_AND_OLD_IMAGES,
                 Encryption = TableEncryption.AWS_MANAGED,
-                TableName = "Advertisements-bjorn",
+                TableName = "Advertisements",
                 RemovalPolicy = RemovalPolicy.DESTROY,
             });
             
@@ -77,9 +76,9 @@ namespace GivtAdvertisements
             var originAccessForBucket = new OriginAccessIdentity(this, $"{id}-access");
             
             bucket.GrantRead(originAccessForBucket);
-
+            
             var apiUri = $"{apiGateWay.RestApiId}.execute-api.{this.Region}.amazonaws.com";
-
+            
             var distribution = new Distribution(this, $"{id}-cloudfront", new DistributionProps
             {
                 PriceClass = PriceClass.PRICE_CLASS_100,
