@@ -97,6 +97,7 @@ namespace GivtAdvertisements
                     }),
                     AllowedMethods = AllowedMethods.ALLOW_ALL,
                     OriginRequestPolicy = OriginRequestPolicy.CORS_CUSTOM_ORIGIN,
+                    CachePolicy = CachePolicy.CACHING_DISABLED
                 },
             });
             
