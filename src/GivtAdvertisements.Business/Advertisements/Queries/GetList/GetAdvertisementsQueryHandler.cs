@@ -20,7 +20,7 @@ namespace GivtAdvertisements.Business.Advertisements
         
         public async Task<List<AdvertisementListItem>> Handle(GetAdvertisementsQuery request, CancellationToken cancellationToken)
         {
-            var query = _dynamoDb.QueryAsync<Advertisement>("#ADVERTISEMENT", new DynamoDBOperationConfig {OverrideTableName = "Advertisements"});
+            var query = _dynamoDb.QueryAsync<Advertisement>("#ADVERTISEMENT", new DynamoDBOperationConfig {OverrideTableName = Constants.TableName});
             var items = await query.GetRemainingAsync(cancellationToken);
             var itemList = items.Select(x => new AdvertisementListItem()
             {

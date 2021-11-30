@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
@@ -21,7 +20,7 @@ namespace GivtAdvertisements.Business.Advertisements.Commands
         {
             var writeAdvertisementRequest = _dynamoDb.CreateBatchWrite<Advertisement>(new DynamoDBOperationConfig
             {
-                OverrideTableName = "Advertisements"
+                OverrideTableName = Constants.TableName
             });
 
             var currentTime = DateTime.UtcNow;

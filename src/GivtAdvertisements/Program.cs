@@ -7,9 +7,10 @@ namespace GivtAdvertisements
         public static void Main(string[] args)
         {
             var app = new App();
-            new GivtAdvertisementsStack(app, "GivtAdvertisementsStack", new StackProps
+            var customStackName = "bjorn";
+            new GivtAdvertisementsStack(app, $"advertisements-{customStackName}", new StackProps
             {
-                StackName = "givt-advertisement-stack"
+                StackName = $"advertisements-{customStackName}"
             });
             app.Synth();
         }

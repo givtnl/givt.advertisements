@@ -1,13 +1,15 @@
+using System;
 using Amazon.CDK;
 using Amazon.CDK.AWS.APIGateway;
 using Amazon.CDK.AWS.CloudFront;
+using Amazon.CDK.AWS.CloudFront.Origins;
 using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.ECR;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.S3;
-using Amazon.CDK.AWS.S3.Deployment;
 using Constructs;
+using Attribute = Amazon.CDK.AWS.DynamoDB.Attribute;
 using Function = Amazon.CDK.AWS.Lambda.Function;
 using FunctionProps = Amazon.CDK.AWS.Lambda.FunctionProps;
 using ILifecycleRule = Amazon.CDK.AWS.ECR.ILifecycleRule;
@@ -15,11 +17,11 @@ using LifecycleRule = Amazon.CDK.AWS.ECR.LifecycleRule;
 
 namespace GivtAdvertisements
 {
-    public class GivtAdvertisementsStack : Stack
+    public sealed class GivtAdvertisementsStack : Stack
     {
         internal GivtAdvertisementsStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
-            var dockerRepository = new Repository(this, "advertisement-repository", new RepositoryProps
+            var dockerRepository = new Repository(this, $"{id}-repository", new RepositoryProps
             {
                 RemovalPolicy = RemovalPolicy.DESTROY,
                 LifecycleRules = new ILifecycleRule[]
@@ -31,19 +33,20 @@ namespace GivtAdvertisements
                     }
                 }
             });
+
             
-            var table = new Table(this, "advertisement-table", new TableProps
+            var table = new Table(this, $"{id}-table", new TableProps
             {
                 BillingMode = BillingMode.PAY_PER_REQUEST,
                 PartitionKey = new Attribute { Name = "PK", Type = AttributeType.STRING },
                 SortKey = new Attribute {Name = "SK", Type = AttributeType.STRING},
                 Stream = StreamViewType.NEW_AND_OLD_IMAGES,
                 Encryption = TableEncryption.AWS_MANAGED,
-                TableName = "Advertisements",
+                TableName = "Advertisements-bjorn",
                 RemovalPolicy = RemovalPolicy.DESTROY,
             });
             
-            var lambdaFunction = new Function(this, "advertisement-lambda", new FunctionProps
+            var lambdaFunction = new Function(this, $"{id}-lambda", new FunctionProps
             {
                 Handler = Handler.FROM_IMAGE,
                 Code = Code.FromEcrImage(dockerRepository),
@@ -51,30 +54,68 @@ namespace GivtAdvertisements
                 Timeout = Duration.Seconds(10),
                 Runtime = Runtime.FROM_IMAGE,
                 LogRetention = RetentionDays.ONE_DAY,
-                FunctionName = "givt-advertisement-api"
+                FunctionName = $"{id}-api"
             });
             
             table.GrantFullAccess(lambdaFunction);
             
-            var apiGateWay = new LambdaRestApi(this, "advertisement-lambda-api", new LambdaRestApiProps
+            var apiGateWay = new LambdaRestApi(this, $"{id}-lambda-api", new LambdaRestApiProps
             {
                 EndpointTypes = new EndpointType[] {EndpointType.REGIONAL},
                 Proxy = true,
                 Handler = lambdaFunction,
             });
             
-            var bucket = new Bucket(this, "advertisement-bucket", new BucketProps {
-                AccessControl =  BucketAccessControl.PUBLIC_READ,
+            var bucket = new Bucket(this, $"{id}-images-bucket", new BucketProps {
+                AccessControl =  BucketAccessControl.PRIVATE,
                 Encryption = BucketEncryption.S3_MANAGED,
                 EnforceSSL = true,
                 PublicReadAccess = true,
                 AutoDeleteObjects = true,
                 RemovalPolicy = RemovalPolicy.DESTROY,
             });
+            
+            var originAccessForBucket = new OriginAccessIdentity(this, $"{id}-access");
+            
+            bucket.GrantRead(originAccessForBucket);
 
-            var originAccessForBucket = new OriginAccessIdentity(this, "advertisement-bucket-access");
+            var apiUri = $"{apiGateWay.RestApiId}.execute-api.{this.Region}.amazonaws.com";
 
-            bucket.GrantRead(originAccessForBucket); 
+            var distribution = new Distribution(this, $"{id}-cloudfront", new DistributionProps
+            {
+                PriceClass = PriceClass.PRICE_CLASS_100,
+                HttpVersion = HttpVersion.HTTP2,
+                DefaultBehavior = new BehaviorOptions
+                {
+                    Origin = new HttpOrigin(apiUri, new HttpOriginProps
+                    {
+                        ProtocolPolicy = OriginProtocolPolicy.HTTPS_ONLY,
+                        OriginPath = "/prod",
+                    }),
+                    AllowedMethods = AllowedMethods.ALLOW_ALL,
+                    OriginRequestPolicy = OriginRequestPolicy.CORS_CUSTOM_ORIGIN,
+                },
+            });
+            
+            distribution.AddBehavior("images", new S3Origin(bucket), new BehaviorOptions
+            {
+                Compress = true,
+                AllowedMethods = AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+                ViewerProtocolPolicy = ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                CachedMethods = CachedMethods.CACHE_GET_HEAD_OPTIONS,
+                CachePolicy = new CachePolicy(this, "caching-policy-advertisement-images", new CachePolicyProps
+                {
+                    QueryStringBehavior = CacheQueryStringBehavior.All(),
+                    HeaderBehavior = CacheHeaderBehavior.AllowList("Host", "Origin", "CloudFront-Forwarded-Proto"),
+                    CookieBehavior = CacheCookieBehavior.All(),
+                    MinTtl = Duration.Minutes(5),
+                    DefaultTtl = Duration.Days(7),
+                    MaxTtl = Duration.Days(31),
+                    EnableAcceptEncodingGzip = true,
+                    EnableAcceptEncodingBrotli = true,
+                    CachePolicyName = "caching-policy-advertisement-images"
+                })
+            });
         }
     }
 }
