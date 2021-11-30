@@ -70,7 +70,6 @@ namespace GivtAdvertisements
                 AccessControl =  BucketAccessControl.PRIVATE,
                 Encryption = BucketEncryption.S3_MANAGED,
                 EnforceSSL = true,
-                PublicReadAccess = true,
                 AutoDeleteObjects = true,
                 RemovalPolicy = RemovalPolicy.DESTROY,
             });
@@ -97,24 +96,16 @@ namespace GivtAdvertisements
                 },
             });
             
-            distribution.AddBehavior("images", new S3Origin(bucket), new BehaviorOptions
+            distribution.AddBehavior("images/*", new S3Origin(bucket, new S3OriginProps
+            {
+                OriginAccessIdentity = originAccessForBucket
+            }), new BehaviorOptions
             {
                 Compress = true,
                 AllowedMethods = AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
                 ViewerProtocolPolicy = ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 CachedMethods = CachedMethods.CACHE_GET_HEAD_OPTIONS,
-                CachePolicy = new CachePolicy(this, "caching-policy-advertisement-images", new CachePolicyProps
-                {
-                    QueryStringBehavior = CacheQueryStringBehavior.All(),
-                    HeaderBehavior = CacheHeaderBehavior.AllowList("Host", "Origin", "CloudFront-Forwarded-Proto"),
-                    CookieBehavior = CacheCookieBehavior.All(),
-                    MinTtl = Duration.Minutes(5),
-                    DefaultTtl = Duration.Days(7),
-                    MaxTtl = Duration.Days(31),
-                    EnableAcceptEncodingGzip = true,
-                    EnableAcceptEncodingBrotli = true,
-                    CachePolicyName = "caching-policy-advertisement-images"
-                })
+                CachePolicy = CachePolicy.CACHING_OPTIMIZED
             });
         }
     }
