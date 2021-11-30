@@ -1,6 +1,7 @@
 using System;
 using Amazon.CDK;
 using Amazon.CDK.AWS.APIGateway;
+using Amazon.CDK.AWS.CertificateManager;
 using Amazon.CDK.AWS.CloudFront;
 using Amazon.CDK.AWS.CloudFront.Origins;
 using Amazon.CDK.AWS.DynamoDB;
@@ -33,7 +34,7 @@ namespace GivtAdvertisements
                     }
                 }
             });
-
+            
             var table = new Table(this, $"{id}-table", new TableProps
             {
                 BillingMode = BillingMode.PAY_PER_REQUEST,
@@ -77,12 +78,16 @@ namespace GivtAdvertisements
             
             bucket.GrantRead(originAccessForBucket);
             
+            var certificate = Certificate.FromCertificateArn(this, "advertisements-certificate", "CERT_ARN_GOES_HERE");
+            
             var apiUri = $"{apiGateWay.RestApiId}.execute-api.{this.Region}.amazonaws.com";
             
             var distribution = new Distribution(this, $"{id}-cloudfront", new DistributionProps
             {
                 PriceClass = PriceClass.PRICE_CLASS_100,
                 HttpVersion = HttpVersion.HTTP2,
+                Certificate = certificate,
+                DomainNames = new [] { "advertisements.givtapp.net" },
                 DefaultBehavior = new BehaviorOptions
                 {
                     Origin = new HttpOrigin(apiUri, new HttpOriginProps
